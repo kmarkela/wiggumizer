@@ -1,6 +1,6 @@
-package parser
+package historyparser
 
-func ParseHistory(data []byte, bh *BrowseHistory) error {
+func ParseHistory(data *[]byte, bh *BrowseHistory) error {
 
 	var hx = historyXML{}
 

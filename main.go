@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/kmarkela/Wiggumizeng/cmd"
-	"github.com/kmarkela/Wiggumizeng/internal/parser"
+	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
 )
 
 const version = "0.0.1-alpha"
@@ -32,14 +32,18 @@ func main() {
 	}
 
 	// parser history
-	var bh = &parser.BrowseHistory{}
-	parser.ParseHistory(data, bh)
+	var bh = &historyparser.BrowseHistory{}
+	historyparser.ParseHistory(&data, bh)
+
+	// define scope
+	sh := cmd.GetMUltipleChoices("Choose hosts in Scope:", bh.ListOfHosts.Keys())
+	bh.FilterByHost(sh)
 
 	// check action
-
-	// start search
-	// start scan
-
-	return
-
+	switch wgr.Params.Action {
+	case cmd.Scan:
+		log.Fatal("not implemented yet")
+	case cmd.Search:
+		log.Fatal("not implemented yet!")
+	}
 }

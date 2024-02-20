@@ -1,4 +1,4 @@
-package parser
+package historyparser
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func TestParseHistory(t *testing.T) {
 
 	// parser history
 	var bh = &BrowseHistory{}
-	ParseHistory(data, bh)
+	ParseHistory(&data, bh)
 
 	fmt.Println(bh.ListOfHosts.Keys())
 

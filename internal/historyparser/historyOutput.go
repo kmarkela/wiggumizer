@@ -1,4 +1,4 @@
-package parser
+package historyparser
 
 import (
 	"fmt"

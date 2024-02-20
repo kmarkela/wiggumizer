@@ -1,4 +1,4 @@
-package parser
+package historyparser
 
 import (
 	"encoding/base64"
@@ -52,9 +52,9 @@ func (r *InReqRes) decodeBase64() (err error) {
 }
 
 // unmarshal XML
-func (hx *historyXML) parseHistory(data []byte) error {
+func (hx *historyXML) parseHistory(data *[]byte) error {
 
-	if err := xml.Unmarshal(data, hx); err != nil {
+	if err := xml.Unmarshal(*data, hx); err != nil {
 		return err
 	}
 	return nil

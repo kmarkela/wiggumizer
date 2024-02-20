@@ -47,7 +47,7 @@ func (w Wiggumizer) greet() {
 	red := color.New(color.FgBlue)
 	boldYellow := color.New(color.FgYellow, color.Bold).Add(color.Underline)
 
-	fmt.Println(red.Sprint(nameASCIIFirst))
+	fmt.Print(red.Sprint(nameASCIIFirst))
 	fmt.Print(boldYellow.Sprint(nameASCIIDescription))
 	fmt.Println(red.Sprint(nameASCIILast))
 }
