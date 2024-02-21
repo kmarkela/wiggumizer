@@ -14,7 +14,7 @@ func TestParseInput(t *testing.T) {
 		{
 			searchStr: "Method POST & ReqBody *admin* & ! ResContentType HTML & ResBody success",
 			expected: sParam{
-				method: sMatch{value: "POST", negative: false},
+				method: []sMatch{{value: "POST", negative: false}},
 				req:    sReg{body: []sMatch{{value: "*admin*", negative: false}}},
 				res: sReg{body: []sMatch{{value: "success", negative: false}},
 					contentType: []sMatch{{value: "HTML", negative: true}}},
@@ -23,7 +23,7 @@ func TestParseInput(t *testing.T) {
 		{
 			searchStr: "Method POST & ReqBody *admin* & ! ReqBody *portal* & ! ResContentType HTML & ResBody success",
 			expected: sParam{
-				method: sMatch{value: "POST", negative: false},
+				method: []sMatch{{value: "POST", negative: false}},
 				req:    sReg{body: []sMatch{{value: "*admin*", negative: false}, {value: "*portal*", negative: true}}},
 				res: sReg{body: []sMatch{{value: "success", negative: false}},
 					contentType: []sMatch{{value: "HTML", negative: true}}},

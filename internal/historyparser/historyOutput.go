@@ -105,7 +105,8 @@ func prepareHItem(ii *InItem) (HistoryItem, error) {
 
 	status, err := strconv.Atoi(ii.Status)
 	if err != nil {
-		return hi, fmt.Errorf("wrong stauts, status: %s", ii.Status)
+		// no responce
+		status = 0
 	}
 
 	// Asign values

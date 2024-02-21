@@ -40,11 +40,50 @@ func checkNegative(input string) (string, sMatch, error) {
 	return sParts[0], sm, nil
 }
 
+func checkConfig(sp *sParam, input string) string {
+	// check case
+	flag := " -i"
+	if strings.Contains(input, flag) {
+		input = strings.ReplaceAll(input, flag, "")
+		sp.conf.caseInSen = true
+	}
+
+	// check br
+	flag = " -br"
+	if strings.Contains(input, flag) {
+		input = strings.ReplaceAll(input, flag, "")
+		sp.conf.output = brief
+		return input
+	}
+
+	// check br
+	flag = " -h"
+	if strings.Contains(input, flag) {
+		input = strings.ReplaceAll(input, flag, "")
+		sp.conf.output = headers
+		return input
+	}
+
+	// check br
+	flag = " -f"
+	if strings.Contains(input, flag) {
+		input = strings.ReplaceAll(input, flag, "")
+		sp.conf.output = full
+		return input
+	}
+
+	return input
+}
+
 func parseInput(input string) sParam {
 	var sp = sParam{
-		req: sReg{},
-		res: sReg{},
+		req:  sReg{},
+		res:  sReg{},
+		conf: sConf{output: reqOnly},
 	}
+	// check search config
+	input = checkConfig(&sp, input)
+
 	parseAnd := strings.Split(input, "&")
 	for _, v := range parseAnd {
 
@@ -56,7 +95,7 @@ func parseInput(input string) sParam {
 
 		switch op {
 		case Method:
-			sp.method = match
+			sp.method = append(sp.method, match)
 		case ReqHeader:
 			sp.req.header = append(sp.req.header, match)
 		case ReqContentType:

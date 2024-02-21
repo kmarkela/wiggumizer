@@ -7,6 +7,7 @@ import (
 
 	"github.com/kmarkela/Wiggumizeng/cmd"
 	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
+	"github.com/kmarkela/Wiggumizeng/internal/search"
 )
 
 const version = "0.0.1-alpha"
@@ -38,12 +39,14 @@ func main() {
 	// define scope
 	sh := cmd.GetMUltipleChoices("Choose hosts in Scope:", bh.ListOfHosts.Keys())
 	bh.FilterByHost(sh)
-
+	fmt.Println(len(bh.HistoryItems))
 	// check action
 	switch wgr.Params.Action {
+	case cmd.Search:
+		s := search.Searcher{}
+		s.Search(bh)
 	case cmd.Scan:
 		log.Fatal("not implemented yet")
-	case cmd.Search:
-		log.Fatal("not implemented yet!")
+
 	}
 }
