@@ -7,10 +7,11 @@ import (
 
 	"github.com/kmarkela/Wiggumizeng/cmd"
 	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
+	"github.com/kmarkela/Wiggumizeng/internal/scanner"
 	"github.com/kmarkela/Wiggumizeng/internal/search"
 )
 
-const version = "0.0.1-alpha"
+const version = "0.1.0-alpha"
 
 func main() {
 
@@ -26,6 +27,9 @@ func main() {
 		return
 	}
 
+	// print ASCII art
+	wgr.Greet()
+
 	// read history file
 	data, err := os.ReadFile(wgr.Params.History)
 	if err != nil {
@@ -39,14 +43,14 @@ func main() {
 	// define scope
 	sh := cmd.GetMUltipleChoices("Choose hosts in Scope:", bh.ListOfHosts.Keys())
 	bh.FilterByHost(sh)
-	fmt.Println(len(bh.HistoryItems))
+
 	// check action
 	switch wgr.Params.Action {
 	case cmd.Search:
 		s := search.Searcher{}
-		s.Search(bh)
+		s.Search(bh, wgr.Params.Workers)
 	case cmd.Scan:
-		log.Fatal("not implemented yet")
-
+		sc := scanner.NewScanner()
+		sc.Scan(bh, wgr.Params.Output, wgr.Params.Workers)
 	}
 }

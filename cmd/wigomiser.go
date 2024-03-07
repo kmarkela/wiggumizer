@@ -19,11 +19,10 @@ func NewWigomiser() (Wiggumizer, error) {
 	}
 
 	w.Params = p
-	w.greet()
 	return w, nil
 }
 
-func (w Wiggumizer) greet() {
+func (w Wiggumizer) Greet() {
 	nameASCIIFirst := `
 	__       __  __                                              __                     
 	|  \  _  |  \|  \                                            |  \                    

@@ -19,6 +19,7 @@ type Params struct {
 	History string
 	Output  string
 	Action  baseAction
+	Workers int
 }
 
 func newParams() (Params, error) {
@@ -38,6 +39,7 @@ func (p *Params) parse() error {
 	flag.StringVar(&p.History, "f", "history.xml", "path to XML file with burp history")
 	flag.StringVar(&p.Output, "o", "report.md", "path to output")
 	flag.StringVar(&actionStr, "a", "scan", "Action. scan/search")
+	flag.IntVar(&p.Workers, "w", 5, "Amount of workers")
 	flag.BoolVar(&ver, "v", false, "print version")
 	flag.Parse()
 

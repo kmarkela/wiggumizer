@@ -54,7 +54,7 @@ type sMatch struct {
 	negative bool
 }
 
-func (s *Searcher) Search(bh *historyparser.BrowseHistory) {
+func (s *Searcher) Search(bh *historyparser.BrowseHistory, numJobs int) {
 
 	fmt.Print("Regexp Search. Type \"help\" for help or \"exit\" to exit \n")
 
@@ -69,20 +69,18 @@ func (s *Searcher) Search(bh *historyparser.BrowseHistory) {
 		// just skip empty str
 	default:
 		s.sParam = parseInput(input)
-		s.output(bh, s.doSearch(bh))
+		s.output(bh, s.doSearch(bh, numJobs))
 	}
 
 	// run self again
-	s.Search(bh)
+	s.Search(bh, numJobs)
 }
 
-func (s *Searcher) doSearch(bh *historyparser.BrowseHistory) []int {
+func (s *Searcher) doSearch(bh *historyparser.BrowseHistory, numJobs int) []int {
 
 	var wgW, wgR sync.WaitGroup
 	var results = []int{}
 
-	// TODO: take it from params/config
-	const numJobs = 5
 	var jCh = make(chan int, numJobs)
 	var rCh = make(chan int, numJobs)
 
