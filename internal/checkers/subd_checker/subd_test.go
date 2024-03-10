@@ -8,26 +8,6 @@ import (
 	"github.com/kmarkela/Wiggumizeng/internal/scanner/splugin"
 )
 
-// type HistoryItem struct {
-// 	Time   string
-// 	Host   string
-// 	Path   string
-// 	Method string
-// 	Status int
-// 	Req    HistoryReqRes
-// 	Res    HistoryReqRes
-// }
-
-// type HistoryReqRes struct {
-// 	Headers     string
-// 	Body        string
-// 	ContentType string
-// }
-
-// Host:        hi.Host,
-// Description: fmt.Sprintf("404 Message from %s found", nfm.name),
-// Evidens:     fmt.Sprintf("Path: %s\n", hi.Path),
-
 func TestCheck(t *testing.T) {
 
 	tests := []struct {

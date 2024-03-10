@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
 	"github.com/kmarkela/Wiggumizeng/internal/scanner/splugin"
@@ -52,6 +53,7 @@ func getRulesList() ([]Rule, error) {
 	if err := yaml.Unmarshal(file, &rList); err != nil {
 		return []Rule{}, err
 	}
+
 	return rList.Rules, nil
 }
 
@@ -60,13 +62,13 @@ func (sc secretChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, b
 
 	rl, err := getRulesList()
 	if err != nil {
-		log.Printf("Cannot get list of not found messages. Err: %s\n", err.Error())
+		log.Printf("Cannot get list of regex. Err: %s\n", err.Error())
 		return f, false
 	}
 
 	for _, rule := range rl {
 
-		regex, err := regexp.Compile(rule.Regex)
+		regex, err := regexp.Compile(strings.TrimSuffix(rule.Regex, "\n"))
 		if err != nil {
 			log.Printf("Error compiling regex pattern: %s\n", err)
 			continue
@@ -78,12 +80,9 @@ func (sc secretChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, b
 			continue
 		}
 
-		f = splugin.Finding{
-			Host:        hi.Host,
-			Description: "Secrets Found",
-			Evidens:     fmt.Sprintf("Path: %s", hi.Path),
-		}
-
+		f.Host = hi.Host
+		f.Description = "Secrets Found"
+		f.Evidens = fmt.Sprintf("Path: %s", hi.Path)
 		f.Details = f.Details + fmt.Sprintf("Description: %s\n Match: %s\n", rule.Description, match)
 
 	}
