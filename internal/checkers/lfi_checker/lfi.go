@@ -12,6 +12,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var configFile string = "internal/checkers/lfi_checker/config.yaml"
+
 type lfiChecker struct {
 	name, descr string
 }
@@ -33,7 +35,7 @@ func (lc lfiChecker) GetDescr() string {
 }
 
 func getExtList() ([]string, error) {
-	file, err := os.ReadFile("internal/checkers/lfi_checker/config.yaml")
+	file, err := os.ReadFile(configFile)
 	if err != nil {
 		return []string{}, err
 	}
