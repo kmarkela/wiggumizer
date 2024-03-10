@@ -13,8 +13,13 @@ import (
 
 var configFile string = "internal/checkers/subd_checker/config.yaml"
 
-type notFoundMessage struct {
-	name, notFoundMessage string
+type NotFoundServices struct {
+	Services []Service `yaml:"services"`
+}
+
+type Service struct {
+	Name            string `yaml:"name"`
+	NotFoundMessage string `yaml:"notFoundMessage"`
 }
 
 type subdChecker struct {
@@ -37,18 +42,17 @@ func (sc subdChecker) GetDescr() string {
 	return sc.descr
 }
 
-func getNFList() ([]notFoundMessage, error) {
+func getNFList() ([]Service, error) {
 	file, err := os.ReadFile(configFile)
 	if err != nil {
-		return []notFoundMessage{}, err
+		return []Service{}, err
 	}
 
-	var nfList []notFoundMessage
+	var nfList NotFoundServices
 	if err := yaml.Unmarshal(file, &nfList); err != nil {
-		return []notFoundMessage{}, err
+		return []Service{}, err
 	}
-
-	return nfList, nil
+	return nfList.Services, nil
 }
 
 func (sc subdChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, bool) {
@@ -65,18 +69,18 @@ func (sc subdChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, boo
 	}
 
 	for _, nfm := range lnf {
-		if !strings.Contains(hi.Res.Body, nfm.notFoundMessage) {
+		if !strings.Contains(hi.Res.Body, nfm.NotFoundMessage) {
 			continue
 		}
 
 		f = splugin.Finding{
 			Host:        hi.Host,
-			Description: fmt.Sprintf("404 Message from %s found", nfm.name),
-			Evidens:     fmt.Sprintf("Path: %s\n", hi.Path),
+			Description: fmt.Sprintf("404 Message from %s found", nfm.Name),
+			Evidens:     fmt.Sprintf("Path: %s", hi.Path),
 		}
-		break
+		return f, true
 
 	}
 
-	return f, true
+	return f, false
 }
