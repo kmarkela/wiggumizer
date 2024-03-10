@@ -11,7 +11,7 @@ import (
 	"github.com/kmarkela/Wiggumizeng/internal/search"
 )
 
-const version = "0.1.0-alpha"
+const version = "0.1.0"
 
 func main() {
 

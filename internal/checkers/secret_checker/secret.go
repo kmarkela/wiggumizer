@@ -30,8 +30,8 @@ type secretChecker struct {
 // declare checker
 func New() secretChecker {
 	return secretChecker{
-		name:  "subdomain_checker",
-		descr: "This module is searching for 404 messages form hosting platformas",
+		name:  "secret_checker",
+		descr: "This module is searching for secrets (eg. API keys)",
 	}
 }
 
