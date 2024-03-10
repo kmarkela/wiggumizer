@@ -10,12 +10,11 @@ import (
 )
 
 type worker struct {
-	bh        *historyparser.BrowseHistory
-	jobs      <-chan int
-	results   chan<- int
-	wg        *sync.WaitGroup
-	reg       sParam
-	caseInSen bool
+	bh      *historyparser.BrowseHistory
+	jobs    <-chan int
+	results chan<- int
+	wg      *sync.WaitGroup
+	reg     sParam
 }
 
 type Searcher struct {
@@ -122,14 +121,14 @@ func (s *Searcher) doSearch(bh *historyparser.BrowseHistory, numJobs int) []int 
 
 func (w *worker) start() {
 	for i := range w.jobs {
-		if checkMatch(&w.bh.HistoryItems[i], w.reg, w.caseInSen) {
+		if checkMatch(&w.bh.HistoryItems[i], w.reg) {
 			w.results <- i
 		}
 	}
 	w.wg.Done()
 }
 
-func checkMatch(bi *historyparser.HistoryItem, reg sParam, ci bool) bool {
+func checkMatch(bi *historyparser.HistoryItem, reg sParam) bool {
 	// check Method
 	if !regexMatch(bi.Method, reg.method, reg.conf.caseInSen) {
 		return false
