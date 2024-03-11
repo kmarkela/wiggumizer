@@ -37,7 +37,7 @@ In scan mode, Wiggumizer analysis web history and run list of checks on Req\Res 
 
 - **LFI Checker**: This module is searching for filenames in request parameters. Could be an indication of possible LFI
 - **Redirect Checker**: This module is searching for Redirects
-- **Secret Checker**
+- **Secret Checker**: This module lokking for sensitive information, such as API keys
 - **SSRF Checker**: This module is searching for URL in request parameters.
 - **Subdomain Checker**: This module is searching for 404 messages form hosting platformas
 - **XML Checker**:  This module is searching for XML in request parameters
