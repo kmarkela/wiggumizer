@@ -74,7 +74,8 @@ Search for requests that satisfy the following criteria:
 - Request body contains the term "admin"
 - Response content type is not HTML
 - Response body contains the term "success"
-Make case insensitive search and output only list uniq endpoints.  
+
+> Make search case insensitive and output only list uniq endpoints.  
 
 ```shell
 ReqMethod POST & ReqBody *admin* & ! ResContentType HTML & ResBody success -br -i
