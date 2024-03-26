@@ -11,12 +11,12 @@ import (
 	"github.com/kmarkela/Wiggumizeng/internal/search"
 )
 
-const version = "0.1.0"
+const version = "0.1.1"
 
 func main() {
 
 	// init cmd
-	wgr, err := cmd.NewWigomiser()
+	wgr, err := cmd.NewWiggumiser()
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
