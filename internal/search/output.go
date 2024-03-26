@@ -72,7 +72,7 @@ func (s *Searcher) output(bh *historyparser.BrowseHistory, r []int) {
 func help() {
 
 	help := "\nRegexp Search: \n\n"
-	help += "Avaliable search fields: \n"
+	help += "Available search fields: \n"
 
 	searchFields := []string{"Method", "ReqHeader", "ReqContentType", "ReqBody", "ResHeader", "ResContentType", "ResBody"}
 

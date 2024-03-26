@@ -105,11 +105,11 @@ func prepareHItem(ii *InItem) (HistoryItem, error) {
 
 	status, err := strconv.Atoi(ii.Status)
 	if err != nil {
-		// no responce
+		// no response
 		status = 0
 	}
 
-	// Asign values
+	// Assign values
 	hi.Time = ii.Time
 	hi.Host = ii.Protocol + "://" + ii.Host.Value + ":" + ii.Port
 	hi.Path = ii.Path

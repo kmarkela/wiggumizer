@@ -8,7 +8,7 @@ import (
 
 type baseAction int
 
-// avaliable actions
+// available actions
 const (
 	Scan baseAction = iota
 	Search
