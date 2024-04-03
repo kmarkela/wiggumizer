@@ -14,11 +14,12 @@ type cInOut struct {
 
 type Scanner struct {
 	checkers map[string]splugin.Checker
+	verbose  bool
 }
 
-func NewScanner() *Scanner {
+func NewScanner(v bool) *Scanner {
 
-	var s = new(Scanner)
+	var s = &Scanner{verbose: v}
 	s.checkers = make(map[string]splugin.Checker)
 	s.registerCheckers()
 	return s

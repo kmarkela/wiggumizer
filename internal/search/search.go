@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"sync"
 
-	"github.com/kmarkela/Wiggumizeng/cmd"
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
 )
 
@@ -53,11 +53,22 @@ type sMatch struct {
 	negative bool
 }
 
+func getString(msg string) string {
+	var s string
+
+	prompt := &survey.Input{
+		Message: msg,
+	}
+	survey.AskOne(prompt, &s)
+
+	return s
+}
+
 func (s *Searcher) Search(bh *historyparser.BrowseHistory, numJobs int) {
 
 	fmt.Print("Regexp Search. Type \"help\" for help or \"exit\" to exit \n")
 
-	input := cmd.GetString("Type search query: ")
+	input := getString("Type search query: ")
 
 	switch input {
 	case "help", "Help", "HELP":
