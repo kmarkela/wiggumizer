@@ -9,11 +9,12 @@ import (
 
 type redirectChecker struct {
 	name, descr string
+	verbose     bool
 }
 
 // declare checker
 func New() splugin.Checker {
-	return redirectChecker{
+	return &redirectChecker{
 		name:  "redirect_checker",
 		descr: "This module is searching for Redirects",
 	}
@@ -25,6 +26,15 @@ func (rc redirectChecker) GetName() string {
 
 func (rc redirectChecker) GetDescr() string {
 	return rc.descr
+}
+
+func (rc redirectChecker) GetVerbose() bool {
+	return rc.verbose
+}
+
+func (rc *redirectChecker) SetVerbose(v bool) error {
+	rc.verbose = v
+	return nil
 }
 
 func (rc redirectChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, bool) {

@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/kmarkela/Wiggumizeng/internal/scanner"
 	"github.com/spf13/cobra"
 )
@@ -35,8 +33,6 @@ List of checks
 
 		sc := scanner.NewScanner(verbose)
 		sc.Scan(bh, output, workers)
-
-		fmt.Println("scan called")
 	},
 }
 

@@ -22,6 +22,11 @@ func NewScanner(v bool) *Scanner {
 	var s = &Scanner{verbose: v}
 	s.checkers = make(map[string]splugin.Checker)
 	s.registerCheckers()
+
+	// it will be posible to enable verbose only for specific checks in futher version
+	for _, v := range s.checkers {
+		v.SetVerbose(s.verbose)
+	}
 	return s
 
 }

@@ -5,6 +5,8 @@ import "github.com/kmarkela/Wiggumizeng/internal/historyparser"
 type Checker interface {
 	GetName() string
 	GetDescr() string
+	GetVerbose() bool
+	SetVerbose(bool) error
 	Check(*historyparser.HistoryItem) (Finding, bool)
 }
 

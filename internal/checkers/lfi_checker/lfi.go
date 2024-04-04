@@ -16,11 +16,12 @@ var configFile string = "internal/checkers/lfi_checker/config.yaml"
 
 type lfiChecker struct {
 	name, descr string
+	verbose     bool
 }
 
 // declare checker
-func New() lfiChecker {
-	return lfiChecker{
+func New() splugin.Checker {
+	return &lfiChecker{
 		name:  "lfi_checker",
 		descr: "This module is searching for filenames in request parameters. Could be an indication of possible LFI",
 	}
@@ -32,6 +33,15 @@ func (lc lfiChecker) GetName() string {
 
 func (lc lfiChecker) GetDescr() string {
 	return lc.descr
+}
+
+func (lc lfiChecker) GetVerbose() bool {
+	return lc.verbose
+}
+
+func (lc *lfiChecker) SetVerbose(v bool) error {
+	lc.verbose = v
+	return nil
 }
 
 func getExtList() ([]string, error) {
