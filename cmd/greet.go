@@ -6,23 +6,7 @@ import (
 	"github.com/fatih/color"
 )
 
-type Wiggumizer struct {
-	Params Params
-}
-
-func NewWiggumiser() (Wiggumizer, error) {
-	var w Wiggumizer
-
-	p, err := newParams()
-	if err != nil {
-		return w, err
-	}
-
-	w.Params = p
-	return w, nil
-}
-
-func (w Wiggumizer) Greet() {
+func greet() {
 	nameASCIIFirst := `
 	__       __  __                                              __                     
 	|  \  _  |  \|  \                                            |  \                    
