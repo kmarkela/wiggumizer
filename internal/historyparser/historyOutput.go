@@ -28,6 +28,12 @@ type HistoryReqRes struct {
 	Headers     string
 	Body        string
 	ContentType string
+	Parameters  Parameters
+}
+
+type Parameters struct {
+	Get  map[string]string
+	Post map[string]string
 }
 
 func parseReqRes(irr *InReqRes, hrr *HistoryReqRes) error {
@@ -124,6 +130,13 @@ func prepareHItem(ii *InItem) (HistoryItem, error) {
 		return hi, err
 	}
 
-	return hi, nil
+	if err := parseGetParam(&hi.Req, ii.Path); err != nil {
+		return hi, err
+	}
 
+	if err := parsePostParams(&hi.Req); err != nil {
+		return hi, err
+	}
+
+	return hi, nil
 }

@@ -1,3 +1,18 @@
+
+        __       __  __                                              __
+        |  \  _  |  \|  \                                            |  \
+        | $$ / \ | $$ \$$  ______    ______   __    __  ______ ____   \$$ ________   ______     ______      
+        | $$/  $\| $$|  \ /      \  /      \ |  \  |  \|      \    \ |  \|        \ /      \  /      \       
+        | $$  $$$\ $$| $$|  $$$$$$\|  $$$$$$\| $$  | $$| $$$$$$\$$$$\| $$ \$$$$$$$$|  $$$$$$\|  $$$$$$\  
+        | $$ $$\$$\$$| $$| $$  | $$| $$  | $$| $$  | $$| $$ | $$ | $$| $$  /    $$ | $$    $$| $$   \$$   
+        | $$$$  \$$$$| $$| $$__| $$| $$__| $$| $$__/ $$| $$ | $$ | $$| $$ /  $$$$_ | $$$$$$$$| $$
+        | $$$    \$$$| $$ \$$    $$ \$$    $$ \$$    $$| $$ | $$ | $$| $$|  $$    \ \$$     \| $$
+         \$$      \$$ \$$ _\$$$$$$$ _\$$$$$$$  \$$$$$$  \$$  \$$  \$$ \$$ \$$$$$$$$  \$$$$$$$ \$$
+                         |  \__| $$|  \__| $$   Web Traffic 4nalizer
+                          \$$    $$ \$$    $$
+                           \$$$$$$   \$$$$$$
+
+
 # Wiggumizer: Web Traffic analyzer
 
 Wiggumizer is a tool designed for security researchers, penetration testers, and ethical hackers.  It is equped with list of checks to identify potential security vulnerabilities in a Web Application. It is not a vulnarability scanner and it does not execute any active scanning/enumeration/testing. It is rather anaylises history exported from Web Proxy (only Burp Suite is currently supported) to identify potential security vulnerabilities, enabling users to focus their investigative efforts efficiently.
