@@ -24,11 +24,12 @@ type Service struct {
 
 type subdChecker struct {
 	name, descr string
+	verbose     bool
 }
 
 // declare checker
-func New() subdChecker {
-	return subdChecker{
+func New() splugin.Checker {
+	return &subdChecker{
 		name:  "subdomain_checker",
 		descr: "This module is searching for 404 messages form hosting platformas",
 	}
@@ -40,6 +41,15 @@ func (sc subdChecker) GetName() string {
 
 func (sc subdChecker) GetDescr() string {
 	return sc.descr
+}
+
+func (sc subdChecker) GetVerbose() bool {
+	return sc.verbose
+}
+
+func (sc *subdChecker) SetVerbose(v bool) error {
+	sc.verbose = v
+	return nil
 }
 
 func getNFList() ([]Service, error) {

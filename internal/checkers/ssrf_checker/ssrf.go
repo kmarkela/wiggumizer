@@ -11,11 +11,12 @@ import (
 
 type ssrfChecker struct {
 	name, descr string
+	verbose     bool
 }
 
 // declare checker
-func New() ssrfChecker {
-	return ssrfChecker{
+func New() splugin.Checker {
+	return &ssrfChecker{
 		name:  "ssrf_checker",
 		descr: "This module is searching for URL in request parameters.",
 	}
@@ -27,6 +28,15 @@ func (sc ssrfChecker) GetName() string {
 
 func (sc ssrfChecker) GetDescr() string {
 	return sc.descr
+}
+
+func (sc ssrfChecker) GetVerbose() bool {
+	return sc.verbose
+}
+
+func (sc *ssrfChecker) SetVerbose(v bool) error {
+	sc.verbose = v
+	return nil
 }
 
 func (sc ssrfChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, bool) {

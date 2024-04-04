@@ -11,11 +11,12 @@ import (
 
 type xmlChecker struct {
 	name, descr string
+	verbose     bool
 }
 
 // declare checker
 func New() splugin.Checker {
-	return xmlChecker{
+	return &xmlChecker{
 		name:  "xml_checker",
 		descr: "This module is searching for XML in request parameters",
 	}
@@ -29,17 +30,17 @@ func (xc xmlChecker) GetDescr() string {
 	return xc.descr
 }
 
-func (xc xmlChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, bool) {
-	var f splugin.Finding
+func (xc xmlChecker) GetVerbose() bool {
+	return xc.verbose
+}
 
-	if strings.Contains(hi.Req.ContentType, "xml") {
-		f = splugin.Finding{
-			Host:        hi.Host,
-			Description: "XML Content Type in Req",
-			Evidens:     hi.Req.ContentType,
-			Details:     fmt.Sprintf("Path: %s\n", hi.Path),
-		}
-	}
+func (xc *xmlChecker) SetVerbose(v bool) error {
+	xc.verbose = v
+	return nil
+}
+
+func checkParams(hi *historyparser.HistoryItem) (splugin.Finding, bool) {
+	var f splugin.Finding
 
 	// cehck patterns
 	rePatern := `\<.*\>`
@@ -68,4 +69,28 @@ func (xc xmlChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, bool
 	}
 
 	return f, true
+}
+
+func (xc xmlChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, bool) {
+	var f splugin.Finding
+
+	if strings.Contains(hi.Req.ContentType, "xml") {
+		f = splugin.Finding{
+			Host:        hi.Host,
+			Description: "XML Content Type in Req",
+			Evidens:     hi.Req.ContentType,
+			Details:     fmt.Sprintf("Path: %s\n", hi.Path),
+		}
+	}
+
+	if f.Host != "" {
+		return f, true
+	}
+
+	if xc.verbose {
+		return checkParams(hi)
+	}
+
+	return f, false
+
 }

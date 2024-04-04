@@ -22,11 +22,23 @@ go build
 ## Usage
 
 ```shell
--f   Path to XML file with Burp history
--o   Path to output file (default: report.md)
--a   Action. 'scan' for history analysis (default), 'search' for pattern search
--w   Amount of workers. 5 is default
--v   Print Version. 
+Web Traffic 4nalizer
+
+Usage:
+  Wiggumize [flags]
+  Wiggumize [command]
+
+Available Commands:
+  help        Help about any command
+  scan        scan analysis web history and run list of checks on Req\Res body and headers
+  search      powerfull search in browse history
+
+Flags:
+  -h, --help          help for Wiggumize
+  -V, --version       print version
+  -w, --workers int   amount of workers (default 5)
+
+Use "Wiggumize [command] --help" for more information about a command.
 ```
 
 ## Scan
