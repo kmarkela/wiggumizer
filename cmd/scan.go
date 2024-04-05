@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"log"
+
 	"github.com/kmarkela/Wiggumizeng/internal/scanner"
 	"github.com/spf13/cobra"
 )
@@ -22,10 +24,22 @@ List of checks
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// get params
-		fname, _ := cmd.Flags().GetString("historyFile")
-		workers, _ := cmd.Flags().GetInt("workers")
-		output, _ := cmd.Flags().GetString("output")
-		verbose, _ := cmd.Flags().GetBool("verbose")
+		fname, err := cmd.Flags().GetString("historyFile")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		workers, err := cmd.Flags().GetInt("workers")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		output, err := cmd.Flags().GetString("output")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		verbose, err := cmd.Flags().GetBool("verbose")
+		if err != nil {
+			log.Fatalln(err)
+		}
 
 		greet()
 
