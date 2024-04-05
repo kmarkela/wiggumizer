@@ -60,6 +60,7 @@ func pwlist(filename string) ([]string, error) {
 		return nil, err
 	}
 
+	// TODO: remove EOF
 	lines := strings.Split(string(content), "\n")
 	if len(lines) == 0 {
 		return nil, fmt.Errorf("%s is empty", filename)

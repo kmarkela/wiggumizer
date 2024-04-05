@@ -77,8 +77,20 @@ func (w *worker) doRequest(url string, body io.Reader, hi *historyparser.History
 	if err != nil {
 		return err
 	}
+
+	for _, v := range strings.Split(hi.Req.Headers, "\n") {
+		keyVal := strings.Split(v, ":")
+		if len(keyVal) != 2 {
+			// TODO: log it
+			continue
+		}
+		req.Header.Set(keyVal[0], strings.TrimSpace(keyVal[1]))
+
+	}
+
 	res, err := w.c.Do(req)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 	defer res.Body.Close()
@@ -115,7 +127,7 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 		endpoint := v.Host + strings.Split(v.Path, "?")[0]
 		f.fuzzHistory.add(endpoint)
 
-		for k, p := range v.Req.Parameters.Get {
+		for k := range v.Req.Parameters.Get {
 
 			// skip parameters that were fuzzed alredy
 			if f.fuzzHistory.h[endpoint].Contains(k) {
@@ -127,12 +139,12 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 			wq <- &workUnit{
 				hi:        &v,
 				endpoint:  endpoint,
-				parameter: p,
+				parameter: k,
 			}
 
 		}
 
-		for k, p := range v.Req.Parameters.Post {
+		for k := range v.Req.Parameters.Post {
 
 			// TODO: make history Method aware
 			// skip parameters that were fuzzed alredy
@@ -145,7 +157,7 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 			wq <- &workUnit{
 				hi:        &v,
 				endpoint:  endpoint,
-				parameter: p,
+				parameter: k,
 				parBody:   true,
 			}
 
