@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
+
+	"github.com/kmarkela/Wiggumizeng/pkg/collections"
 )
 
 type Fuzzer struct {
@@ -38,7 +40,7 @@ func New(workers, maxReq int, headers, excludeEndpoint, excludeParam, parameter 
 	}
 
 	return &Fuzzer{
-		fuzzHistory:     fhistory{},
+		fuzzHistory:     fhistory{h: make(map[string]collections.Set)},
 		wordlist:        wordlist,
 		headers:         h,
 		workers:         workers,

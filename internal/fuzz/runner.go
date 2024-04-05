@@ -2,6 +2,7 @@ package fuzz
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"sync"
@@ -10,45 +11,80 @@ import (
 	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
 )
 
-// Worker represents a single worker that executes HTTP requests.
-type worker struct {
-	hi       <-chan *historyparser.HistoryItem
-	res      chan<- *http.Response
-	wordlist []string
-	tr       *http.Transport
+type workUnit struct {
+	endpoint, parameter string
+	parBody             bool
+	hi                  *historyparser.HistoryItem
 }
 
-func newWorker(hi <-chan *historyparser.HistoryItem, res chan<- *http.Response, wordlist []string, tr *http.Transport) *worker {
+// Worker represents a single worker that executes HTTP requests.
+type worker struct {
+	workQ    <-chan *workUnit
+	res      chan<- *http.Response
+	wordlist []string
+	c        *http.Client
+}
+
+// func newWorker(hi <-chan *historyparser.HistoryItem, res chan<- *http.Response, wordlist []string, tr *http.Transport) *worker {
+func newWorker(wq <-chan *workUnit, wordlist []string, tr *http.Transport) *worker {
 	return &worker{
-		hi:       hi,
-		res:      res,
+		workQ: wq,
+		// res:      res,
 		wordlist: wordlist,
-		tr:       tr,
+		c:        &http.Client{Transport: tr},
 	}
 }
 
 // Start the worker to execute HTTP requests.
-func (w *worker) Start(rateLimiter <-chan time.Time) {
-	for hi := range w.hi {
+func (w *worker) start(rateLimiter <-chan time.Time) {
+	for wu := range w.workQ {
+
 		for _, word := range w.wordlist {
 			if rateLimiter != nil {
 				<-rateLimiter // Wait for rate limit if provided
 			}
-			w.res <- w.doRequest(hi)
+
+			if wu.parBody {
+				w.fuzzBody(wu, word)
+				continue
+			}
+
+			w.fuzzGet(wu, word)
+
+			// w.res <- w.doRequest(hi)
+
 		}
 	}
 }
 
-func (w *worker) doRequest(hi *historyparser.HistoryItem) string {
-	response, err := http.Get(url)
-	if err != nil {
-		return fmt.Sprintf("Error fetching %s: %s", url, err)
-	}
-	defer response.Body.Close()
+func (w *worker) fuzzGet(wu *workUnit, word string) {
 
-	// Here you can process the response as needed
-	// For simplicity, let's just return the response status code
-	return fmt.Sprintf("Response from %s: %s", url, response.Status)
+	// prepare url
+	oldParam := fmt.Sprintf("%s=%s", wu.parameter, wu.hi.Req.Parameters.Get[wu.parameter])
+	newParam := fmt.Sprintf("%s=%s", wu.parameter, word)
+	endpoint := strings.Replace(wu.hi.Path, oldParam, newParam, 1)
+	url := fmt.Sprintf("%s%s", wu.hi.Host, endpoint)
+
+	w.doRequest(url, nil, wu.hi)
+
+}
+
+func (w *worker) fuzzBody(wu *workUnit, word string) {}
+
+func (w *worker) doRequest(url string, body io.Reader, hi *historyparser.HistoryItem) error {
+
+	req, err := http.NewRequest(hi.Method, url, body)
+	if err != nil {
+		return err
+	}
+	res, err := w.c.Do(req)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	return nil
+
 }
 
 func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
@@ -59,16 +95,17 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 		rateLimiter = time.Tick(time.Second / time.Duration(f.maxReq))
 	}
 
-	hi := make(chan *historyparser.HistoryItem, f.workers)
+	wq := make(chan *workUnit, f.workers)
+	// results := make(chan string, f.workers)
 
 	// Create and start workers
 	var wg sync.WaitGroup
 	for i := 0; i < f.workers; i++ {
-		worker := newWorker(hi)
+		worker := newWorker(wq, f.wordlist, f.tr)
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			worker.Start(rateLimiter)
+			worker.start(rateLimiter)
 		}()
 	}
 
@@ -87,7 +124,11 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 
 			f.fuzzHistory.h[endpoint].Add(k)
 
-			hi <- &v
+			wq <- &workUnit{
+				hi:        &v,
+				endpoint:  endpoint,
+				parameter: p,
+			}
 
 		}
 
@@ -101,12 +142,25 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 
 			f.fuzzHistory.h[endpoint].Add(k)
 
-			hi <- &v
+			wq <- &workUnit{
+				hi:        &v,
+				endpoint:  endpoint,
+				parameter: p,
+				parBody:   true,
+			}
 
 		}
 	}
 
-	close(hi)
+	close(wq)
 	wg.Wait()
+
+	// Close the results channel
+	// close(results)
+
+	// // Process results
+	// for result := range results {
+	// 	fmt.Println(result)
+	// }
 
 }
