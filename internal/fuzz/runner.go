@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"time"
@@ -61,7 +62,7 @@ func (w *worker) fuzzGet(wu *workUnit, word string) {
 
 	// prepare url
 	oldParam := fmt.Sprintf("%s=%s", wu.parameter, wu.hi.Req.Parameters.Get[wu.parameter])
-	newParam := fmt.Sprintf("%s=%s", wu.parameter, word)
+	newParam := fmt.Sprintf("%s=%s", wu.parameter, url.QueryEscape(word))
 	endpoint := strings.Replace(wu.hi.Path, oldParam, newParam, 1)
 	url := fmt.Sprintf("%s%s", wu.hi.Host, endpoint)
 
@@ -69,7 +70,11 @@ func (w *worker) fuzzGet(wu *workUnit, word string) {
 
 }
 
-func (w *worker) fuzzBody(wu *workUnit, word string) {}
+func (w *worker) fuzzBody(wu *workUnit, word string) {
+
+	body := w.encodeBody(wu.hi.Req.ContentType, word, wu.parameter, wu.hi.Req.Parameters.Post)
+	w.doRequest(wu.hi.Host+wu.hi.Path, body, wu.hi)
+}
 
 func (w *worker) doRequest(url string, body io.Reader, hi *historyparser.HistoryItem) error {
 
@@ -130,11 +135,11 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 		for k := range v.Req.Parameters.Get {
 
 			// skip parameters that were fuzzed alredy
-			if f.fuzzHistory.h[endpoint].Contains(k) {
+			if f.fuzzHistory.h[endpoint].Contains("get-" + k) {
 				continue
 			}
 
-			f.fuzzHistory.h[endpoint].Add(k)
+			f.fuzzHistory.h[endpoint].Add("get-" + k)
 
 			wq <- &workUnit{
 				hi:        &v,
@@ -146,13 +151,12 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 
 		for k := range v.Req.Parameters.Post {
 
-			// TODO: make history Method aware
 			// skip parameters that were fuzzed alredy
-			if f.fuzzHistory.h[endpoint].Contains(k) {
+			if f.fuzzHistory.h[endpoint].Contains("post-" + k) {
 				continue
 			}
 
-			f.fuzzHistory.h[endpoint].Add(k)
+			f.fuzzHistory.h[endpoint].Add("post-" + k)
 
 			wq <- &workUnit{
 				hi:        &v,

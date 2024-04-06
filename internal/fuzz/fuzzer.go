@@ -82,10 +82,3 @@ func pheaders(headers []string) (map[string]string, error) {
 
 	return rh, nil
 }
-
-// func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
-
-// 	for _, v := range bh.HistoryItems {
-// 		v.Host + strings.Split(v.Path, "?")[0]
-// 	}
-// }
