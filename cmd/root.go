@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const version = "v1.0.0-alpha1"
+const version = "v1.0.0-alpha2"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -21,7 +21,7 @@ var rootCmd = &cobra.Command{
 	Long:  `Web Traffic 4nalizer`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if v, _ := cmd.Flags().GetBool("version"); v {
-			fmt.Printf("Wiggumizer: %s", version)
+			fmt.Printf("Wiggumizer: %s\n", version)
 			os.Exit(0)
 		}
 		cmd.Root().Help()

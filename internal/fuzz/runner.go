@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -145,12 +146,21 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 
 		for k := range v.Req.Parameters.Get {
 
+			if slices.Contains(f.excludeParam, k) {
+				continue
+			}
+
 			// skip parameters that were fuzzed alredy
 			if f.fuzzHistory.h[endpoint].Contains("get-" + k) {
 				continue
 			}
 
 			f.fuzzHistory.h[endpoint].Add("get-" + k)
+
+			// add param to header
+			if f.verbose {
+				v.Req.Headers = fmt.Sprintf("%s\nX-Wiggumizer-param-get: %s", v.Req.Headers, k)
+			}
 
 			wq <- &workUnit{
 				hi:        v,
@@ -162,12 +172,26 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 
 		for k := range v.Req.Parameters.Post {
 
+			// exclude parameter
+			// parse (json)
+			p := strings.Split(k, ".")
+			if slices.Contains(f.excludeParam, p[len(p)-1]) {
+				continue
+			}
+
+			// include only specified parameter
+
 			// skip parameters that were fuzzed alredy
 			if f.fuzzHistory.h[endpoint].Contains("post-" + k) {
 				continue
 			}
 
 			f.fuzzHistory.h[endpoint].Add("post-" + k)
+
+			// add param to header
+			if f.verbose {
+				v.Req.Headers = fmt.Sprintf("%s\nX-Wiggumizer-param-post: %s", v.Req.Headers, k)
+			}
 
 			wq <- &workUnit{
 				hi:        v,
