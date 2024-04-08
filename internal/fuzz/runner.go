@@ -20,8 +20,8 @@ type workUnit struct {
 
 // Worker represents a single worker that executes HTTP requests.
 type worker struct {
-	workQ    <-chan *workUnit
-	res      chan<- *http.Response
+	workQ <-chan *workUnit
+	// res      chan<- *http.Response
 	wordlist []string
 	c        *http.Client
 	cHeaders map[string]string
@@ -119,6 +119,7 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 	// Create rate limiter if maxReq > 0
 	var rateLimiter <-chan time.Time
 	if f.maxReq > 0 {
+		// TODO:  rateLimiter: time.NewTicker(time.Second / time.Duration(maxReq)),
 		rateLimiter = time.Tick(time.Second / time.Duration(f.maxReq))
 	}
 
