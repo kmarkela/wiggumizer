@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -44,7 +46,21 @@ func prepareForm(params map[string]string) io.Reader {
 	return bytes.NewBuffer([]byte(data))
 }
 
+func isSlice(str string) bool {
+	pattern := `^\[.*\]$`
+	match, _ := regexp.MatchString(pattern, str)
+	return match
+}
+
+func isObj(str string) bool {
+	pattern := `^\{.*\}$`
+	match, _ := regexp.MatchString(pattern, str)
+	return match
+}
+
 func prepareJSON(data map[string]string) io.Reader {
+	var sliceValue []interface{}
+	var objValue map[string]interface{}
 	jsonData := make(map[string]interface{})
 
 	for key, value := range data {
@@ -59,6 +75,27 @@ func prepareJSON(data map[string]string) io.Reader {
 			}
 			temp = temp[keys[i]].(map[string]interface{})
 		}
+
+		// check if int
+		if v, err := strconv.Atoi(value); err == nil {
+			temp[keys[len(keys)-1]] = v
+			continue
+		}
+
+		// check if slice
+		if isSlice(value) {
+			json.Unmarshal([]byte(value), &sliceValue)
+			temp[keys[len(keys)-1]] = sliceValue
+			continue
+		}
+
+		// check if obj
+		if isObj(value) {
+			json.Unmarshal([]byte(value), &objValue)
+			temp[keys[len(keys)-1]] = objValue
+			continue
+		}
+
 		temp[keys[len(keys)-1]] = value
 	}
 
