@@ -1,22 +1,26 @@
 package historyparser
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
 )
 
+// type PostParams interface {
+// 	map[string]string | map[string]interface
+// }
+
 // parse key=value
 func parseKeqV(s string) (map[string]string, error) {
 	params := make(map[string]string)
 
-	// parse Get parameters
-	parsedURL, err := url.Parse(s)
+	kEqV, err := url.Parse(s)
 	if err != nil {
 		return params, err
 	}
 
-	queryParams := parsedURL.Query()
+	queryParams := kEqV.Query()
 	for k := range queryParams {
 		params[k] = queryParams.Get(k)
 	}
@@ -37,22 +41,53 @@ func parseGetParam(r *HistoryReqRes, path string) error {
 
 func parsePostParams(r *HistoryReqRes) error {
 
+	var result map[string]string
+	var err error
+
 	// empty Body (t=1)
 	if len(r.Body) < 3 {
 		return nil
 	}
 
-	// starting with form. others content type will be added in new versions
-	if !strings.HasPrefix(r.ContentType, "application/x-www-form-urlencoded") {
-		return nil
+	// parse form data
+	if strings.HasPrefix(r.ContentType, "application/x-www-form-urlencoded") {
+		result, err = parseKeqV(fmt.Sprintf("?%s", r.Body))
+		if err != nil {
+			return err
+		}
 	}
 
-	params, err := parseKeqV(fmt.Sprintf("?%s", r.Body))
-	if err != nil {
-		return err
+	// parse json
+	if r.ContentType == "application/json" {
+		var data map[string]interface{}
+		err := json.Unmarshal([]byte(r.Body), &data)
+		if err != nil {
+			return fmt.Errorf("error parsing JSON: %s", err.Error())
+		}
+		result = parseJSON(data, "")
 	}
 
-	r.Parameters.Post = params
+	r.Parameters.Post = result
 
 	return nil
+}
+
+func parseJSON(data map[string]interface{}, prefix string) map[string]string {
+	result := make(map[string]string)
+
+	for key, value := range data {
+		switch v := value.(type) {
+		case map[string]interface{}:
+			// Nested object, recurse
+			nestedResult := parseJSON(v, prefix+key+".")
+			for nestedKey, nestedValue := range nestedResult {
+				result[nestedKey] = nestedValue
+			}
+		default:
+			// Leaf node, add to the result map
+			result[prefix+key] = fmt.Sprintf("%v", value)
+		}
+	}
+
+	return result
 }

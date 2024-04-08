@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"log"
+
 	"github.com/kmarkela/Wiggumizeng/internal/search"
 	"github.com/spf13/cobra"
 )
@@ -42,8 +44,15 @@ Make search case insensitive and output only list uniq endpoints.
 
 ReqMethod POST & ReqBody *admin* & ! ResContentType HTML & ResBody success -br -i`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fname, _ := cmd.Flags().GetString("historyFile")
-		workers, _ := cmd.Flags().GetInt("workers")
+
+		fname, err := cmd.Flags().GetString("historyFile")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		workers, err := cmd.Flags().GetInt("workers")
+		if err != nil {
+			log.Fatalln(err)
+		}
 
 		greet()
 		bh := getHistory(fname)
