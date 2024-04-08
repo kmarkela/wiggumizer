@@ -15,7 +15,7 @@ import (
 type workUnit struct {
 	endpoint, parameter string
 	parBody             bool
-	hi                  *historyparser.HistoryItem
+	hi                  historyparser.HistoryItem
 }
 
 // Worker represents a single worker that executes HTTP requests.
@@ -24,15 +24,17 @@ type worker struct {
 	res      chan<- *http.Response
 	wordlist []string
 	c        *http.Client
+	cHeaders map[string]string
 }
 
 // func newWorker(hi <-chan *historyparser.HistoryItem, res chan<- *http.Response, wordlist []string, tr *http.Transport) *worker {
-func newWorker(wq <-chan *workUnit, wordlist []string, tr *http.Transport) *worker {
+func newWorker(wq <-chan *workUnit, wordlist []string, tr *http.Transport, cheaders map[string]string) *worker {
 	return &worker{
 		workQ: wq,
 		// res:      res,
 		wordlist: wordlist,
 		c:        &http.Client{Transport: tr},
+		cHeaders: cheaders,
 	}
 }
 
@@ -61,19 +63,23 @@ func (w *worker) start(rateLimiter <-chan time.Time) {
 func (w *worker) fuzzGet(wu *workUnit, word string) {
 
 	// prepare url
-	oldParam := fmt.Sprintf("%s=%s", wu.parameter, wu.hi.Req.Parameters.Get[wu.parameter])
+	oldParam := fmt.Sprintf("%s=%s", wu.parameter, url.QueryEscape(wu.hi.Req.Parameters.Get[wu.parameter]))
 	newParam := fmt.Sprintf("%s=%s", wu.parameter, url.QueryEscape(word))
 	endpoint := strings.Replace(wu.hi.Path, oldParam, newParam, 1)
 	url := fmt.Sprintf("%s%s", wu.hi.Host, endpoint)
 
-	w.doRequest(url, nil, wu.hi)
+	w.doRequest(url, nil, &wu.hi)
 
 }
 
 func (w *worker) fuzzBody(wu *workUnit, word string) {
 
-	body := w.encodeBody(wu.hi.Req.ContentType, word, wu.parameter, wu.hi.Req.Parameters.Post)
-	w.doRequest(wu.hi.Host+wu.hi.Path, body, wu.hi)
+	body, err := w.encodeBody(wu.hi.Req.ContentType, word, wu.parameter, wu.hi.Req.Parameters.Post)
+	if err != nil {
+		// body is in unsupported content type
+		return
+	}
+	w.doRequest(wu.hi.Host+wu.hi.Path, body, &wu.hi)
 }
 
 func (w *worker) doRequest(url string, body io.Reader, hi *historyparser.HistoryItem) error {
@@ -91,6 +97,10 @@ func (w *worker) doRequest(url string, body io.Reader, hi *historyparser.History
 		}
 		req.Header.Set(keyVal[0], strings.TrimSpace(keyVal[1]))
 
+	}
+
+	for k, v := range w.cHeaders {
+		req.Header.Set(k, v)
 	}
 
 	res, err := w.c.Do(req)
@@ -118,7 +128,7 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 	// Create and start workers
 	var wg sync.WaitGroup
 	for i := 0; i < f.workers; i++ {
-		worker := newWorker(wq, f.wordlist, f.tr)
+		worker := newWorker(wq, f.wordlist, f.tr, f.headers)
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -142,7 +152,7 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 			f.fuzzHistory.h[endpoint].Add("get-" + k)
 
 			wq <- &workUnit{
-				hi:        &v,
+				hi:        v,
 				endpoint:  endpoint,
 				parameter: k,
 			}
@@ -159,7 +169,7 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 			f.fuzzHistory.h[endpoint].Add("post-" + k)
 
 			wq <- &workUnit{
-				hi:        &v,
+				hi:        v,
 				endpoint:  endpoint,
 				parameter: k,
 				parBody:   true,

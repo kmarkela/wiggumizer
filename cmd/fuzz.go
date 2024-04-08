@@ -81,12 +81,12 @@ func init() {
 	fuzzCmd.MarkFlagRequired("wordlist")
 	fuzzCmd.Flags().StringP("proxy", "p", "", "proxy")
 	fuzzCmd.Flags().IntP("maxReq", "m", 0, "max amount of requests per second")
-	// fuzzCmd.Flags().StringSlice("headers", []string{}, "ISN'T IMPLEMENTED YET. replace header if exists, add if it wasn't in original request")
-	// fuzzCmd.Flags().StringSlice("excludeEndpoint", []string{}, "ISN'T IMPLEMENTED YET. exclude specific endpoints from fuzz")
-	// fuzzCmd.Flags().StringSlice("excludeParam", []string{}, "ISN'T IMPLEMENTED YET. exclude specific parameters from fuzz")
-	// fuzzCmd.Flags().StringSlice("parameters", []string{}, "ISN'T IMPLEMENTED YET. fuzz only specified parameters")
+	fuzzCmd.Flags().StringSlice("headers", []string{}, "replace header if exists, add if it wasn't in original request")
+	fuzzCmd.Flags().StringSlice("excludeEndpoint", []string{}, "ISN'T IMPLEMENTED YET. exclude specific endpoints from fuzz")
+	fuzzCmd.Flags().StringSlice("excludeParam", []string{}, "ISN'T IMPLEMENTED YET. exclude specific parameters from fuzz")
+	fuzzCmd.Flags().StringSlice("parameters", []string{}, "ISN'T IMPLEMENTED YET. fuzz only specified parameters")
 
-	// fuzzCmd.Flags().BoolP("verbose", "v", false, "ISN'T IMPLEMENTED YET. verbose")
+	fuzzCmd.Flags().BoolP("verbose", "v", false, "verbose mode")
 
 	rootCmd.AddCommand(fuzzCmd)
 }

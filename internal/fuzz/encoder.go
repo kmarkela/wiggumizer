@@ -2,12 +2,13 @@ package fuzz
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/url"
 	"strings"
 )
 
-func (w *worker) encodeBody(ctype, word, param string, params map[string]string) io.Reader {
+func (w *worker) encodeBody(ctype, word, param string, params map[string]string) (io.Reader, error) {
 
 	params[param] = word
 
@@ -17,7 +18,11 @@ func (w *worker) encodeBody(ctype, word, param string, params map[string]string)
 		body = prepareForm(params)
 	}
 
-	return body
+	if body == nil {
+		return nil, fmt.Errorf("encoder is not implemented")
+	}
+
+	return body, nil
 
 }
 
