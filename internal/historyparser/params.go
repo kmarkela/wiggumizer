@@ -59,11 +59,23 @@ func parsePostParams(r *HistoryReqRes) error {
 
 	// parse json
 	if r.ContentType == "application/json" {
-		var data map[string]interface{}
-		err := json.Unmarshal([]byte(r.Body), &data)
-		if err != nil {
-			return fmt.Errorf("error parsing JSON: %s", err.Error())
+		var data map[string]interface{} = make(map[string]interface{})
+		var dataList []map[string]interface{}
+
+		switch {
+		case strings.HasPrefix(r.Body, "["):
+			if err := json.Unmarshal([]byte(r.Body), &dataList); err != nil {
+				return fmt.Errorf("error parsing JSON: %s", err.Error())
+			}
+			// TODO: Fuzzing only firs element in the list. update to fuzz all
+			data = dataList[0]
+			data["WG-data-in-slice"] = struct{}{}
+		default:
+			if err := json.Unmarshal([]byte(r.Body), &data); err != nil {
+				return fmt.Errorf("error parsing JSON: %s", err.Error())
+			}
 		}
+
 		result = parseJSON(data, "")
 	}
 

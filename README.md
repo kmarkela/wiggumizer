@@ -107,3 +107,9 @@ Search for requests that satisfy the following criteria:
 ```shell
 ReqMethod POST & ReqBody *admin* & ! ResContentType HTML & ResBody success -br -i
 ```
+
+
+
+------
+Note: 
+Fuzz limitimation - If json response has [] on upper level, only first element got Fuzzed
