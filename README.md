@@ -44,6 +44,7 @@ Usage:
   Wiggumize [command]
 
 Available Commands:
+  fuzz        fuzz all endpoint from history
   help        Help about any command
   scan        scan analysis web history and run list of checks on Req\Res body and headers
   search      powerfull search in browse history

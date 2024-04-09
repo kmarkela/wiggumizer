@@ -11,15 +11,15 @@ import (
 )
 
 type Fuzzer struct {
-	fuzzHistory                                        fhistory
-	workers, maxReq                                    int
-	excludeEndpoint, excludeParam, parameter, wordlist []string
-	verbose                                            bool
-	headers                                            map[string]string
-	tr                                                 *http.Transport
+	fuzzHistory                       fhistory
+	workers, maxReq                   int
+	excludeParam, parameter, wordlist []string
+	verbose                           bool
+	headers                           map[string]string
+	tr                                *http.Transport
 }
 
-func New(workers, maxReq int, headers, excludeEndpoint, excludeParam, parameter []string, filename, proxy string, v bool) (*Fuzzer, error) {
+func New(workers, maxReq int, headers, excludeParam, parameter []string, filename, proxy string, v bool) (*Fuzzer, error) {
 
 	// read wordlist
 	wordlist, err := pwlist(filename)
@@ -40,16 +40,15 @@ func New(workers, maxReq int, headers, excludeEndpoint, excludeParam, parameter 
 	}
 
 	return &Fuzzer{
-		fuzzHistory:     fhistory{h: make(map[string]collections.Set)},
-		wordlist:        wordlist,
-		headers:         h,
-		workers:         workers,
-		maxReq:          maxReq,
-		excludeEndpoint: excludeEndpoint,
-		excludeParam:    excludeParam,
-		parameter:       parameter,
-		verbose:         v,
-		tr:              &http.Transport{Proxy: http.ProxyURL(proxyUrl)},
+		fuzzHistory:  fhistory{h: make(map[string]collections.Set)},
+		wordlist:     wordlist,
+		headers:      h,
+		workers:      workers,
+		maxReq:       maxReq,
+		excludeParam: excludeParam,
+		parameter:    parameter,
+		verbose:      v,
+		tr:           &http.Transport{Proxy: http.ProxyURL(proxyUrl)},
 	}, nil
 }
 
