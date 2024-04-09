@@ -11,7 +11,7 @@ import (
 
 func (s *Scanner) saveReport(fname string, findings map[string][]splugin.Finding, scope []string) error {
 
-	content := "# Wiggumize Report\n\n"
+	content := "# Wiggumizer Report\n\n"
 	content += "__Scope:__\n"
 
 	for _, host := range scope {
@@ -24,7 +24,7 @@ func (s *Scanner) saveReport(fname string, findings map[string][]splugin.Finding
 		content += "- __" + key + ":__ " + val.GetDescr() + "\n"
 	}
 
-	content += strings.Repeat("-", 20)
+	content += strings.Repeat("-", 30)
 	content += "\n\n"
 
 	for key, val := range findings {
@@ -32,12 +32,12 @@ func (s *Scanner) saveReport(fname string, findings map[string][]splugin.Finding
 		content += "## " + key + "\n"
 
 		for i, f := range val {
-			content += "### Finding " + strconv.Itoa(i) + ". - " + f.Description + "\n"
+			content += "###  #" + strconv.Itoa(i) + " - " + f.Description + "\n"
 			content += "__Host: " + f.Host + "__ \n\n"
-			content += "_Evidens:_\n\n```\n" + f.Evidens + "\n```\n"
+			content += "_Details:_\n\n```\n" + f.Evidens + "\n```\n"
 
 			if f.Details != "" {
-				content += "_More Details:_\n\n```\n" + f.Details + "\n```\n"
+				content += "_Additional Details:_\n\n```\n" + f.Details + "\n```\n"
 			}
 		}
 

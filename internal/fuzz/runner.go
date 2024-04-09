@@ -26,16 +26,18 @@ type worker struct {
 	wordlist []string
 	c        *http.Client
 	cHeaders map[string]string
+	progress chan<- struct{}
 }
 
 // func newWorker(hi <-chan *historyparser.HistoryItem, res chan<- *http.Response, wordlist []string, tr *http.Transport) *worker {
-func newWorker(wq <-chan *workUnit, wordlist []string, tr *http.Transport, cheaders map[string]string) *worker {
+func newWorker(wq <-chan *workUnit, wordlist []string, tr *http.Transport, cheaders map[string]string, progress chan<- struct{}) *worker {
 	return &worker{
 		workQ: wq,
 		// res:      res,
 		wordlist: wordlist,
 		c:        &http.Client{Transport: tr},
 		cHeaders: cheaders,
+		progress: progress,
 	}
 }
 
@@ -111,6 +113,8 @@ func (w *worker) doRequest(url string, body io.Reader, hi *historyparser.History
 	}
 	defer res.Body.Close()
 
+	w.progress <- struct{}{}
+
 	return nil
 
 }
@@ -124,13 +128,18 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 		rateLimiter = time.Tick(time.Second / time.Duration(f.maxReq))
 	}
 
-	wq := make(chan *workUnit, f.workers)
+	wq := make(chan *workUnit)
+	// wq := make(chan *workUnit, f.workers)
 	// results := make(chan string, f.workers)
+
+	progress := make(chan struct{})
+
+	go updateProgress(len(bh.HistoryItems), len(f.wordlist), f.maxReq, progress)
 
 	// Create and start workers
 	var wg sync.WaitGroup
 	for i := 0; i < f.workers; i++ {
-		worker := newWorker(wq, f.wordlist, f.tr, f.headers)
+		worker := newWorker(wq, f.wordlist, f.tr, f.headers, progress)
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -205,6 +214,9 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 
 	close(wq)
 	wg.Wait()
+
+	fmt.Println("# Fuzz Complited. Use Proxy to look for results")
+	fmt.Println("===============================================")
 
 	// Close the results channel
 	// close(results)
