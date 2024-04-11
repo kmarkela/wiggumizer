@@ -42,10 +42,6 @@ var fuzzCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalln(err)
 		}
-		excludeEndpoint, err := cmd.Flags().GetStringSlice("excludeEndpoint")
-		if err != nil {
-			log.Fatalln(err)
-		}
 		excludeParam, err := cmd.Flags().GetStringSlice("excludeParam")
 		if err != nil {
 			log.Fatalln(err)
@@ -59,7 +55,7 @@ var fuzzCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
-		f, err := fuzz.New(workers, maxReq, headers, excludeEndpoint, excludeParam, parameters, fname, proxy, verbose)
+		f, err := fuzz.New(workers, maxReq, headers, excludeParam, parameters, fname, proxy, verbose)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -82,9 +78,8 @@ func init() {
 	fuzzCmd.Flags().StringP("proxy", "p", "", "proxy")
 	fuzzCmd.Flags().IntP("maxReq", "m", 0, "max amount of requests per second")
 	fuzzCmd.Flags().StringSlice("headers", []string{}, "replace header if exists, add if it wasn't in original request")
-	fuzzCmd.Flags().StringSlice("excludeEndpoint", []string{}, "ISN'T IMPLEMENTED YET. exclude specific endpoints from fuzz")
 	fuzzCmd.Flags().StringSlice("excludeParam", []string{}, "exclude specific parameters from fuzz")
-	fuzzCmd.Flags().StringSlice("parameters", []string{}, "ISN'T IMPLEMENTED YET. fuzz only specified parameters")
+	fuzzCmd.Flags().StringSlice("parameters", []string{}, "fuzz only specified parameters")
 
 	fuzzCmd.Flags().BoolP("verbose", "v", false, "verbose mode")
 

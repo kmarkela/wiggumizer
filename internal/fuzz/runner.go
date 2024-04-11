@@ -159,6 +159,10 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 				continue
 			}
 
+			if f.parameter != nil && !slices.Contains(f.parameter, k) {
+				continue
+			}
+
 			// skip parameters that were fuzzed alredy
 			if f.fuzzHistory.h[endpoint].Contains("get-" + k) {
 				continue
@@ -189,6 +193,10 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 			}
 
 			// include only specified parameter
+			// parse (json)
+			if f.parameter != nil && !slices.Contains(f.parameter, p[len(p)-1]) {
+				continue
+			}
 
 			// skip parameters that were fuzzed alredy
 			if f.fuzzHistory.h[endpoint].Contains("post-" + k) {

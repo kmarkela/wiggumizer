@@ -1,8 +1,6 @@
 package fuzz
 
 import (
-	"fmt"
-
 	"github.com/kmarkela/Wiggumizeng/pkg/collections"
 )
 
@@ -16,9 +14,9 @@ func (fh *fhistory) add(s string) {
 	}
 }
 
-func (fh *fhistory) get(s string) (collections.Set, error) {
-	if val, ok := fh.h[s]; ok {
-		return val, nil
-	}
-	return collections.Set{}, fmt.Errorf("endpoint not found")
-}
+// func (fh *fhistory) get(s string) (collections.Set, error) {
+// 	if val, ok := fh.h[s]; ok {
+// 		return val, nil
+// 	}
+// 	return collections.Set{}, fmt.Errorf("endpoint not found")
+// }
