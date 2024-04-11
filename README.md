@@ -24,16 +24,6 @@ Wiggumizer is intended to be used exclusively for ethical and legitimate purpose
 By using Wiggumizer, you acknowledge and agree to adhere to all applicable laws and regulations governing your activities. You are solely responsible for obtaining proper authorization before conducting security assessments on any systems, networks, or applications. The developers and maintainers of Wiggumize disclaim any liability for any misuse, damage, or legal consequences resulting from the misuse of this tool.
 
 
-## Installation
-
-### Building from src:
-
-```bash
-git clone https://github.com/kmarkela/Wiggumizeng.git
-cd Wiggumizeng
-go build
-```
-
 ## Usage
 
 ```shell
