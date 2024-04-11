@@ -12,11 +12,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const version = "v1.0.0-alpha3"
+const version = "v1.0.0"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "Wiggumize",
+	Use:   "wiggumizer",
 	Short: "Web Traffic 4nalizer",
 	Long:  `Web Traffic 4nalizer`,
 	Run: func(cmd *cobra.Command, args []string) {
