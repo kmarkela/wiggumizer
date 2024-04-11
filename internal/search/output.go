@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
-	"github.com/kmarkela/Wiggumizeng/pkg/collections"
+	"github.com/kmarkela/wiggumizer/internal/historyparser"
+	"github.com/kmarkela/wiggumizer/pkg/collections"
 )
 
 func listEdnpoints(bh *historyparser.BrowseHistory, r []int) []string {

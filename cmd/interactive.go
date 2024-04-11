@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/kmarkela/Wiggumizeng/pkg/collections"
+	"github.com/kmarkela/wiggumizer/pkg/collections"
 )
 
 func GetMUltipleChoices(label string, opts []string) collections.Set {

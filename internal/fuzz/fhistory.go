@@ -1,7 +1,7 @@
 package fuzz
 
 import (
-	"github.com/kmarkela/Wiggumizeng/pkg/collections"
+	"github.com/kmarkela/wiggumizer/pkg/collections"
 )
 
 type fhistory struct {

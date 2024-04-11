@@ -6,7 +6,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/kmarkela/Wiggumizeng/internal/fuzz"
+	"github.com/kmarkela/wiggumizer/internal/fuzz"
 	"github.com/spf13/cobra"
 )
 

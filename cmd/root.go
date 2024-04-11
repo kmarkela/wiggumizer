@@ -8,11 +8,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
+	"github.com/kmarkela/wiggumizer/internal/historyparser"
 	"github.com/spf13/cobra"
 )
 
-const version = "v1.0.0"
+const version = "v1.0.1"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{

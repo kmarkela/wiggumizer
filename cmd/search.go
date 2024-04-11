@@ -3,7 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/kmarkela/Wiggumizeng/internal/search"
+	"github.com/kmarkela/wiggumizer/internal/search"
 	"github.com/spf13/cobra"
 )
 

@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
+	"github.com/kmarkela/wiggumizer/internal/historyparser"
 )
 
 type workUnit struct {
