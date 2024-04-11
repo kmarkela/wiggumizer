@@ -1,6 +1,6 @@
 package splugin
 
-import "github.com/kmarkela/Wiggumizeng/internal/historyparser"
+import "github.com/kmarkela/wiggumizer/internal/historyparser"
 
 type Checker interface {
 	GetName() string

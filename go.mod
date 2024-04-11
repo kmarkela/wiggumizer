@@ -1,4 +1,4 @@
-module github.com/kmarkela/Wiggumizeng
+module github.com/kmarkela/wiggumizer
 
 go 1.21.0
 

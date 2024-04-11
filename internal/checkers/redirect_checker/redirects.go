@@ -3,8 +3,8 @@ package redirect_checker
 import (
 	"fmt"
 
-	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
-	"github.com/kmarkela/Wiggumizeng/internal/scanner/splugin"
+	"github.com/kmarkela/wiggumizer/internal/historyparser"
+	"github.com/kmarkela/wiggumizer/internal/scanner/splugin"
 )
 
 type redirectChecker struct {

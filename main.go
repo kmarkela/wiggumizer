@@ -1,6 +1,6 @@
 package main
 
-import "github.com/kmarkela/Wiggumizeng/cmd"
+import "github.com/kmarkela/wiggumizer/cmd"
 
 func main() {
 	cmd.Execute()

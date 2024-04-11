@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kmarkela/Wiggumizeng/internal/historyparser"
-	"github.com/kmarkela/Wiggumizeng/internal/scanner/splugin"
+	"github.com/kmarkela/wiggumizer/internal/historyparser"
+	"github.com/kmarkela/wiggumizer/internal/scanner/splugin"
 )
 
 type xmlChecker struct {

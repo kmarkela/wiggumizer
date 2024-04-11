@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kmarkela/Wiggumizeng/internal/scanner/splugin"
+	"github.com/kmarkela/wiggumizer/internal/scanner/splugin"
 )
 
 func (s *Scanner) saveReport(fname string, findings map[string][]splugin.Finding, scope []string) error {

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kmarkela/Wiggumizeng/pkg/collections"
+	"github.com/kmarkela/wiggumizer/pkg/collections"
 )
 
 type BrowseHistory struct {
