@@ -1,9 +1,9 @@
 package subdchecker
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/kmarkela/wiggumizer/internal/historyparser"
@@ -11,7 +11,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var configFile string = "internal/checkers/subd_checker/config.yaml"
+// var configFile string = "internal/checkers/subd_checker/config.yaml"
+
+//go:embed config.yaml
+var defaultConfigFile []byte
 
 type NotFoundServices struct {
 	Services []Service `yaml:"services"`
@@ -51,19 +54,27 @@ func (sc *subdChecker) SetVerbose(v bool) error {
 	sc.verbose = v
 	return nil
 }
-
 func getNFList() ([]Service, error) {
-	file, err := os.ReadFile(configFile)
-	if err != nil {
-		return []Service{}, err
-	}
 
 	var nfList NotFoundServices
-	if err := yaml.Unmarshal(file, &nfList); err != nil {
+	if err := yaml.Unmarshal(defaultConfigFile, &nfList); err != nil {
 		return []Service{}, err
 	}
 	return nfList.Services, nil
 }
+
+// func getNFList() ([]Service, error) {
+// 	file, err := os.ReadFile(configFile)
+// 	if err != nil {
+// 		return []Service{}, err
+// 	}
+
+// 	var nfList NotFoundServices
+// 	if err := yaml.Unmarshal(file, &nfList); err != nil {
+// 		return []Service{}, err
+// 	}
+// 	return nfList.Services, nil
+// }
 
 func (sc subdChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, bool) {
 	var f splugin.Finding

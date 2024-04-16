@@ -38,7 +38,8 @@ func New(workers, maxReq int, headers, excludeParam, parameter []string, filenam
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(proxyUrl)
+	fmt.Println("proxyUrl")
 	return &Fuzzer{
 		fuzzHistory:  fhistory{h: make(map[string]collections.Set)},
 		wordlist:     wordlist,

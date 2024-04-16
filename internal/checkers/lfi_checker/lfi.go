@@ -1,9 +1,9 @@
 package lfi_checker
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
-	"os"
 	"regexp"
 	"strings"
 
@@ -12,7 +12,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var configFile string = "internal/checkers/lfi_checker/config.yaml"
+// var configFile string = "internal/checkers/lfi_checker/config.yaml"
+
+//go:embed config.yaml
+var defaultConfigFile []byte
 
 type lfiChecker struct {
 	name, descr string
@@ -44,14 +47,24 @@ func (lc *lfiChecker) SetVerbose(v bool) error {
 	return nil
 }
 
+// func getExtList() ([]string, error) {
+// 	file, err := os.ReadFile(configFile)
+// 	if err != nil {
+// 		return []string{}, err
+// 	}
+
+// 	var extensions []string
+// 	if err := yaml.Unmarshal(file, &extensions); err != nil {
+// 		return []string{}, err
+// 	}
+
+// 	return extensions, nil
+// }
+
 func getExtList() ([]string, error) {
-	file, err := os.ReadFile(configFile)
-	if err != nil {
-		return []string{}, err
-	}
 
 	var extensions []string
-	if err := yaml.Unmarshal(file, &extensions); err != nil {
+	if err := yaml.Unmarshal(defaultConfigFile, &extensions); err != nil {
 		return []string{}, err
 	}
 

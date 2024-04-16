@@ -1,9 +1,9 @@
 package secretchecker
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
-	"os"
 	"regexp"
 	"strings"
 
@@ -12,7 +12,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var configFile string = "internal/checkers/secret_checker/config.yaml"
+// var configFile string = "internal/checkers/secret_checker/config.yaml"
+
+//go:embed config.yaml
+var defaultConfigFile []byte
 
 type RulesList struct {
 	Rules []Rule `yaml:"rules"`
@@ -55,18 +58,28 @@ func (sc *secretChecker) SetVerbose(v bool) error {
 }
 
 func getRulesList() ([]Rule, error) {
-	file, err := os.ReadFile(configFile)
-	if err != nil {
-		return []Rule{}, err
-	}
 
 	var rList RulesList
-	if err := yaml.Unmarshal(file, &rList); err != nil {
+	if err := yaml.Unmarshal(defaultConfigFile, &rList); err != nil {
 		return []Rule{}, err
 	}
 
 	return rList.Rules, nil
 }
+
+// func getRulesList() ([]Rule, error) {
+// 	file, err := os.ReadFile(configFile)
+// 	if err != nil {
+// 		return []Rule{}, err
+// 	}
+
+// 	var rList RulesList
+// 	if err := yaml.Unmarshal(file, &rList); err != nil {
+// 		return []Rule{}, err
+// 	}
+
+// 	return rList.Rules, nil
+// }
 
 func (sc secretChecker) Check(hi *historyparser.HistoryItem) (splugin.Finding, bool) {
 	var f splugin.Finding

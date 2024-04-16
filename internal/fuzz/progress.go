@@ -12,7 +12,7 @@ func updateProgress(hei, wdi, rl int, ii <-chan struct{}) {
 		fmt.Printf("* Rate Limit: %d req/s\n", rl)
 	}
 	fmt.Println("===============================================")
-	fmt.Println("# Requests Sent: 1")
+	fmt.Println("# Requests Sent: 0")
 	i := 1
 	for range ii {
 		moveCursorUp(1) // Move cursor up by one line
