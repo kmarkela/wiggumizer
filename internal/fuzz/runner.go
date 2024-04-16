@@ -159,7 +159,7 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 				continue
 			}
 
-			if f.parameter != nil && !slices.Contains(f.parameter, k) {
+			if len(f.parameter) > 0 && !slices.Contains(f.parameter, k) {
 				continue
 			}
 
