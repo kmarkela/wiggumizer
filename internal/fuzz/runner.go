@@ -119,6 +119,28 @@ func (w *worker) doRequest(url string, body io.Reader, hi *historyparser.History
 
 }
 
+// check if:
+// 1. Parameter is not in Exlided Params
+// 2. List of params to fuzz specified and the param is not in the list
+// 3. The Param has been fuzzed alredy
+func (f *Fuzzer) shouldFuzz(param string, method string, endpoint string) bool {
+
+	// 1.
+	if slices.Contains(f.excludeParam, param) {
+		return false
+	}
+
+	// 2.
+	if len(f.parameter) > 0 && !slices.Contains(f.parameter, param) {
+		return false
+	}
+
+	paramInCache := fmt.Sprintf("%s-%s", method, param)
+
+	// 3.
+	return !f.fuzzHistory.h[endpoint].Contains(paramInCache)
+}
+
 func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 
 	// Create rate limiter if maxReq > 0
@@ -155,16 +177,7 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 
 		for k := range v.Req.Parameters.Get {
 
-			if slices.Contains(f.excludeParam, k) {
-				continue
-			}
-
-			if len(f.parameter) > 0 && !slices.Contains(f.parameter, k) {
-				continue
-			}
-
-			// skip parameters that were fuzzed alredy
-			if f.fuzzHistory.h[endpoint].Contains("get-" + k) {
+			if !f.shouldFuzz(k, "get", endpoint) {
 				continue
 			}
 
@@ -188,18 +201,8 @@ func (f *Fuzzer) Run(bh *historyparser.BrowseHistory) {
 			// exclude parameter
 			// parse (json)
 			p := strings.Split(k, ".")
-			if slices.Contains(f.excludeParam, p[len(p)-1]) {
-				continue
-			}
 
-			// include only specified parameter
-			// parse (json)
-			if f.parameter != nil && !slices.Contains(f.parameter, p[len(p)-1]) {
-				continue
-			}
-
-			// skip parameters that were fuzzed alredy
-			if f.fuzzHistory.h[endpoint].Contains("post-" + k) {
+			if !f.shouldFuzz(p[len(p)-1], "post", endpoint) {
 				continue
 			}
 
