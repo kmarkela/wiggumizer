@@ -1,4 +1,4 @@
-
+[![Go Report Card](https://goreportcard.com/badge/github.com/kmarkela/wiggumizer)](https://goreportcard.com/report/github.com/kmarkela/wiggumizer)
         __       __  __                                              __
         |  \  _  |  \|  \                                            |  \
         | $$ / \ | $$ \$$  ______    ______   __    __  ______ ____   \$$ ________   ______     ______      
