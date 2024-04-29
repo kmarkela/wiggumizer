@@ -10,10 +10,10 @@ import (
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "powerfull search in browse history",
+	Short: "powerful search in browse history",
 	Long: `Search parameters in interactive mode:
 
-Avaliable search fields:
+Available search fields:
 Method
 ReqHeader
 ReqContentType
@@ -22,11 +22,11 @@ ResHeader
 ResContentType
 ResBody
 
-Avaliable search operators:
+Available search operators:
 & - AND
 ! - NOT
 
-Avaliable config flags:
+Available config flags:
 -i - Case insensitive search
 -br - brief output (only list uniq endpoints)
 -h - only headers in output
